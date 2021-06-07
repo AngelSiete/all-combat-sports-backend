@@ -1,9 +1,16 @@
 {
   "dependencies": {
     "@vue/cli": "^4.5.13",
+    "express": "^4.17.1",
     "vue": "^2.6.14"
   },
+  "scripts": {
+    "start": "node index",
+    "test": "mocha --reporter spec",
+    "dev": "nodemon index -e js,tpl"
+  },
   "devDependencies": {
+    "dotenv": "^10.0.0",
     "nodemon": "^2.0.7"
   }
 }
