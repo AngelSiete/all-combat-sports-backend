@@ -19,7 +19,7 @@ app.use(indexController)
 // app.use(userController)
 // app.use(authController)
 
-// database.connect()
+database.connect()
 
 
 module.exports = app
