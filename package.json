@@ -10,7 +10,10 @@
   "scripts": {
     "start": "node index",
     "test": "mocha --reporter spec",
-    "dev": "nodemon index -e js,tpl"
+    "dev": "nodemon index -e js,tpl",
+    "online": "heroku ps:scale web=1 && heroku open",
+    "offline": "heroku ps:scale web=0"
+
   },
   "devDependencies": {
     "dotenv": "^10.0.0",
