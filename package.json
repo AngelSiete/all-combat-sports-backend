@@ -10,6 +10,9 @@
     "slugify": "^1.5.3",
     "vue": "^2.6.14"
   },
+  "engines": {
+    "node": "14.16.1"
+  },
   "scripts": {
     "start": "node index",
     "test": "mocha --reporter spec",
@@ -22,9 +25,6 @@
     "nodemon": "^2.0.7"
   },
   "name": "all-combat-sports-backend",
-  "engines": {
-    "node": "14.16.1"
-  },
   "version": "1.0.0",
   "main": "index.js",
   "repository": "git@github.com:AngelSiete/all-combat-sports-backend.git",
