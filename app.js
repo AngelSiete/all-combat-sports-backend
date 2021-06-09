@@ -2,24 +2,22 @@
 
 const express = require('express')
 
-//Middlewares con las rutas
+
 const indexController = require('./controllers/indexController')
 const mainPageController = require('./controllers/mainPageController')
-// const articleController = require('./controllers/articleController')
-// const userController = require('./controllers/usersControllers')
-// const authController = require('./controllers/authController')
+const userController = require('./controllers/usersControllers')
+const authController = require('./controllers/authController')
 const database = require('./modules/database')
 
 const app = express()
 
 app.use(express.json())
-// require('./modules/authenticator')
+require('./modules/authenticator')
 
 app.use(indexController)
 app.use(mainPageController)
-// app.use(articleController)
-// app.use(userController)
-// app.use(authController)
+app.use(userController)
+app.use(authController)
 
 database.connect()
 
