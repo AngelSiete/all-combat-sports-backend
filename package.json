@@ -2,8 +2,11 @@
   "dependencies": {
     "@vue/cli": "^4.5.13",
     "axios": "^0.21.1",
+    "cors": "^2.8.5",
     "express": "^4.17.1",
+    "jwt": "^0.2.0",
     "mongoose": "^5.12.13",
+    "sha512": "^0.0.1",
     "slugify": "^1.5.3",
     "vue": "^2.6.14"
   },
@@ -13,7 +16,6 @@
     "dev": "nodemon index -e js,tpl",
     "online": "heroku ps:scale web=1 && heroku open",
     "offline": "heroku ps:scale web=0"
-
   },
   "devDependencies": {
     "dotenv": "^10.0.0",

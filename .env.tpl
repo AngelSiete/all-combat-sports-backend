@@ -1,4 +1,4 @@
 PORT= 3000
 sportsdata_API_KEY =
-
+PUBLIC_DOMAIN
 config.DB_CONNECTION_STRING
