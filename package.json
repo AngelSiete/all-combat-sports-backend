@@ -20,5 +20,11 @@
   "devDependencies": {
     "dotenv": "^10.0.0",
     "nodemon": "^2.0.7"
-  }
+  },
+  "name": "all-combat-sports-backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:AngelSiete/all-combat-sports-backend.git",
+  "author": "Angel <andraco660@gmail.com>",
+  "license": "MIT"
 }
