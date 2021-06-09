@@ -9,6 +9,8 @@ El middleware debe permitir:
 2.- Listar que perfiles pueden llamar al método
 3.- Lanzar errores en caso de producirse un problema al verificar/extraer el token
 4.- Dejar los datos del token en la petición para su uso posterior
+
+
 */
 
 module.exports = function authenticator(requiredSession, allowedProfiles = []) {
