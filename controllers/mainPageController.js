@@ -12,9 +12,9 @@ const fightBoxingModel = require('../models/fightBoxingModel')
 //   VALIDACIÓN DEL NOMBRE
 //   Devuelve una lista de luchadores segun el FighterSchema
 //
-router.route("/luchador/:nombre").get(async(req, res) =>{
+router.route("/luchador/:apellido").get(async(req, res) =>{
   // PARÁMETROS
-  if(!nameValidator(req.params.nombre)){
+  if(!nameValidator(req.params.apellido)){
     res.json({
       "success":false,
       "metadata":{"errorMsg": "No es un nombre válido"}
@@ -23,8 +23,9 @@ router.route("/luchador/:nombre").get(async(req, res) =>{
   }
   // DB
   try{
-  let apellido = req.params.nombre;
+  let apellido = req.params.apellido;
   const filterParams = {LastName: apellido}
+  // BUSCAR SIEMPRE CON LA PRIEMRA LETRA DEL APELLIDO EN MAYUSCULA
   const fightersByNameList = await fighterModel
       .find(filterParams)
       .sort({ LastName: 'ASC'})
@@ -38,6 +39,7 @@ router.route("/luchador/:nombre").get(async(req, res) =>{
           id: luchador.id,
           FirstName: luchador.FirstName,
           LastName: luchador.LastName,
+          Nickname: luchador.Nickname,
           WeightClass: luchador.WeightClass
         }
       )
