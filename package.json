@@ -6,6 +6,7 @@
     "js-sha512": "^0.8.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.12.13",
+    "passport": "^0.4.1",
     "slugify": "^1.5.3",
     "vue": "^2.6.14"
   },
