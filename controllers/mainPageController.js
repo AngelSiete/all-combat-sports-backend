@@ -72,7 +72,6 @@ router.route('/luchadores')
       // if (!req.tokenData || req.tokenData.profile === 'user') {
       //   filterParams.enabled = true
       // }
-
       const fightersList = await fighterModel
       .find(filterParams)
       .sort({ LastName: 'ASC'})
@@ -102,7 +101,8 @@ router.route('/luchadores')
         "success": false,
         "metadata":
           {
-            message: error.message
+            message: error.message,
+            env: process.env
           }
         }
         );
