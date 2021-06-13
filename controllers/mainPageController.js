@@ -138,39 +138,6 @@ router.route('/API/luchas/:tipo')
     res.send(createErrorResponse(e.data))
   }
 
-
-
-
-  // if (!fightTypeValidator(req.params.tipo)){
-  //   res.json({
-  //     "success":false,
-  //     "metadata":{"errorMsg": "No es un criterio de búsqueda válido"}
-  //   });
-  //   return;
-  // }
-  // try {
-
-
-  //   const mmaFightsList = await fightModel.find(filterParams).sort({ Day: 'DESC'}).limit(limit).exec()
-  //   let fightsCustomList = []
-  //   mmaFightsList.forEach(lucha =>{
-  //     fightsCustomList.push({id: lucha.id, Name: lucha.Name, ShortName: lucha.ShortName, DateTime: lucha.DateTime, Season: lucha.Season})
-
-  //   })
-  //   const boxFightsList = await fightBoxingModel.find(filterParams).sort({ Day: 'DESC'}).limit(limit).exec()
-
-  //   res.json({fightsCustomList, boxFightsList})
-  // } catch (error) {
-  //   res.status(500).json(
-  //     {
-  //     "success": false,
-  //     "metadata":
-  //       {
-  //         message: error.message
-  //       }
-  //     }
-  //     );
-  // }
 })
 
 
@@ -186,7 +153,7 @@ router.route("/API/calendario")
 
 
   // LASPAGEID PARA PAGINACION
-  let lastPageID = req.query.hasOwnProperty('pageID') ? req.query.pageID : 0
+  // let lastPageID = req.query.hasOwnProperty('pageID') ? req.query.pageID : 0
 
   let now = new Date();
   let inAweek = new Date();
@@ -201,7 +168,7 @@ router.route("/API/calendario")
   // LLAMAMOS, FILTRAMOS, AÑADIMOS PELEAS DE MMA
   const fightList = await fightModel
   .find(filterParams)
-  .skip(lastPageID)
+  // .skip(lastPageID)
   .limit(1)
   .sort({ DateTime: 'ASC'})
   .exec()
@@ -267,21 +234,3 @@ function createSuccessResponse(data, metadata){
   module.exports = router
 
 
-//const axios = require('axios').default;
-// https://fly.sportsdata.io/v3/mma/scores/json/Fighter/140000001
-// https://fly.sportsdata.io/v3/mma/scores/json/Fighters
-//https://fly.sportsdata.io/v3/mma/scores/json/Leagues
-//
-// LLAMADA CON AXIOS
-//
-// axios.get('https://fly.sportsdata.io/v3/mma/scores/json/Fighter/140000001', {
-//   params: {
-//     'key': process.env.sportsdata_API_KEY}})
-//   .then(function (response) {
-//     // handle success
-//     console.log(response.data);
-//   })
-//   .catch(function (error) {
-//     // handle error
-//     console.log(error);
-//   })
