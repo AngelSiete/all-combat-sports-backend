@@ -19,7 +19,7 @@ app.use(indexController)
 app.use(mainPageController)
 app.use(userController)
 app.use(authController)
-
+app.get("/", express.static(__dirname + "/public"))
 database.connect()
 
 
