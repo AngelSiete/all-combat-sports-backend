@@ -12,7 +12,7 @@ const fightBoxingModel = require('../models/fightBoxingModel')
 //   VALIDACIÓN DEL NOMBRE
 //   Devuelve una lista de luchadores segun el FighterSchema
 //
-router.route("/luchador/:apellido").get(async(req, res) =>{
+router.route("/API/luchador/:apellido").get(async(req, res) =>{
   // PARÁMETROS
   if(!nameValidator(req.params.apellido)){
     res.json({
@@ -63,7 +63,7 @@ router.route("/luchador/:apellido").get(async(req, res) =>{
 });
 
 
-router.route('/luchadores')
+router.route('/API/luchadores')
   .get(async (req, res) => {
     try {
       const limit = req.query.hasOwnProperty('limit') ? parseInt(req.query.limit) : 30
@@ -109,36 +109,68 @@ router.route('/luchadores')
     }
   })
 // Este endpoint busca en la base de datos y trae TODAS las peleas (MMA y boxeo) juntas de TODOS los luchadores.Paginado de 30 en 30 (fijo). NO FILTRA POR CERCANÍA EN EL TIEMPO.
-router.route('/luchas')
+// Vamos a filtrar para que devuelva al FRONT listado de peleas específicas -> SÓLO BOXEO // SÓLO MMA// TODAS
+router.route('/API/luchas/:tipo')
 .get(async(req,res) =>{
-  try {
-    const limit = 30
-    const filterParams = {}
-
-    // if (!req.tokenData || req.tokenData.profile === 'user') {
-    //   filterParams.enabled = true
-    // }
-
-    const fightsList = await fightModel.find(filterParams).sort({ Day: 'DESC'}).limit(limit).exec()
-    let fightsCustomList = []
-    fightsList.forEach(lucha =>{
-      fightsCustomList.push({id: lucha.id, Name: lucha.Name, ShortName: lucha.ShortName, DateTime: lucha.DateTime, Season: lucha.Season})
-
-    })
-    const boxFightsList = await fightBoxingModel.find(filterParams).sort({ Day: 'DESC'}).limit(limit).exec()
-
-    res.json({fightsCustomList, boxFightsList})
-  } catch (error) {
-    res.status(500).json(
-      {
-      "success": false,
-      "metadata":
-        {
-          message: error.message
-        }
-      }
-      );
+  let startTime = new Date();
+  let criterio = req.params.tipo;
+  if (!fightTypeValidator(criterio)){
+    res.send(createErrorResponse(`El criterio ${criterio} no es válido`))
+    return;
   }
+  try{
+    let data = [];
+    if(criterio === "box" || criterio  === "todos"){
+      const boxFightsList = await fightBoxingModel.find().sort({ Day: 'DESC'}).exec();
+      data.push(...boxFightsList);
+    }
+    if(criterio === "mma" || criterio === "todos"){
+      const mmaFightList =  await fightModel.find().sort({ Day: 'DESC'}).exec();
+      const mmaFights = mmaFightList.map((lucha) =>{
+        return {id: lucha.id, Name: lucha.Name, ShortName: lucha.ShortName, DateTime: lucha.DateTime, Season: lucha.Season}
+      })
+      data.push(...mmaFights);
+    }
+    let endTime = new Date() - startTime;
+    res.send(createSuccessResponse(data, {"numElements": data.length, "excTime (ms)": endTime,}));
+  }
+  catch(e){
+    res.send(createErrorResponse(e.data))
+  }
+
+
+
+
+  // if (!fightTypeValidator(req.params.tipo)){
+  //   res.json({
+  //     "success":false,
+  //     "metadata":{"errorMsg": "No es un criterio de búsqueda válido"}
+  //   });
+  //   return;
+  // }
+  // try {
+
+
+  //   const mmaFightsList = await fightModel.find(filterParams).sort({ Day: 'DESC'}).limit(limit).exec()
+  //   let fightsCustomList = []
+  //   mmaFightsList.forEach(lucha =>{
+  //     fightsCustomList.push({id: lucha.id, Name: lucha.Name, ShortName: lucha.ShortName, DateTime: lucha.DateTime, Season: lucha.Season})
+
+  //   })
+  //   const boxFightsList = await fightBoxingModel.find(filterParams).sort({ Day: 'DESC'}).limit(limit).exec()
+
+  //   res.json({fightsCustomList, boxFightsList})
+  // } catch (error) {
+  //   res.status(500).json(
+  //     {
+  //     "success": false,
+  //     "metadata":
+  //       {
+  //         message: error.message
+  //       }
+  //     }
+  //     );
+  // }
 })
 
 
@@ -148,13 +180,13 @@ router.route('/luchas')
 //
 // PIDE: la lastPageID -> para paginación, puede ser nulo
 //DEVUELVE: las primeras 10 peleas que encuentra A PARTIR de lastpageID(default:las 10 primeras)
-router.route("/calendario")
+router.route("/API/calendario")
 .get(async(req,res)=>{
   try {
 
 
   // LASPAGEID PARA PAGINACION
-  let lastPageID = req.query.hasOwnProperty('pageID') ? req.query.pageID : null
+  let lastPageID = req.query.hasOwnProperty('pageID') ? req.query.pageID : 0
 
   let now = new Date();
   let inAweek = new Date();
@@ -169,6 +201,8 @@ router.route("/calendario")
   // LLAMAMOS, FILTRAMOS, AÑADIMOS PELEAS DE MMA
   const fightList = await fightModel
   .find(filterParams)
+  .skip(lastPageID)
+  .limit(1)
   .sort({ DateTime: 'ASC'})
   .exec()
   combinedFights.push(fightList)
@@ -178,7 +212,11 @@ router.route("/calendario")
   .sort({ DateTime: 'ASC'})
   .exec();
   combinedFights.push(fightBoxingList)
-  res.send(combinedFights);
+  res.send({
+    "success":true,
+    "metadata":{},
+    "data": combinedFights,
+  });
 } catch (error) {
   res.status(500).json(
     {
@@ -203,20 +241,30 @@ function nameValidator(input) {
   else return true
 
 }
+function fightTypeValidator(input){
+  if (input === "mma" ||input === "box" || input === "todos"   ){
+    return true
+  }
+  else return false
+}
+
+function createErrorResponse(msg){
+  return {
+    "sucess": false,
+    "metadata":{
+      "msg": msg
+    }
+  }
+}
+
+function createSuccessResponse(data, metadata){
+  return {
+    "success": true,
+    "metadata": metadata,
+    "data": data,
+  }
+}
   module.exports = router
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 //const axios = require('axios').default;
