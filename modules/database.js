@@ -12,7 +12,7 @@ class Database {
     this.db = mongoose.connection;
 
     try {
-            await mongoose.connect(proces.env.DB_CONNECTION_STRING, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true })
+            await mongoose.connect(process.env.DB_CONNECTION_STRING, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true })
       console.log('Estamos conectados a MongoDB')
     }
     catch(error) {
