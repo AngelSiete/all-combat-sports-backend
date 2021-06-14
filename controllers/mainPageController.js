@@ -66,7 +66,7 @@ router.route("/API/luchador/:apellido").get(async(req, res) =>{
 router.route('/API/luchadores')
   .get(async (req, res) => {
     try {
-      const limit = req.query.hasOwnProperty('limit') ? parseInt(req.query.limit) : 30
+      const limit = req.query.hasOwnProperty('limit') ? parseInt(req.query.limit) : 50
       const filterParams = {}
 
       // if (!req.tokenData || req.tokenData.profile === 'user') {
