@@ -74,7 +74,6 @@ router.route('/API/luchadores')
       // }
       const fightersList = await fighterModel
       .find(filterParams)
-      .sort({ LastName: 'ASC'})
       .limit(limit)
       .exec()
       let fightersCustomList = []
@@ -85,7 +84,8 @@ router.route('/API/luchadores')
               id: luchador.id,
               FirstName: luchador.FirstName,
               LastName: luchador.LastName,
-              WeightClass: luchador.WeightClass
+              WeightClass: luchador.WeightClass,
+              Nickname: luchador.Nickname
             }
           )
       })

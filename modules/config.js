@@ -14,3 +14,8 @@ if (process.env.NODE_ENV === 'dev') {
 }else{
   module.exports = process.env
 }
+const dotenv = require('dotenv')
+  const result = dotenv.config()
+  const envs = result.parsed
+
+  module.exports = envs
