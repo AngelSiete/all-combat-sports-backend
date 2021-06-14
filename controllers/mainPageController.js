@@ -112,7 +112,6 @@ router.route('/API/luchadores')
 // Vamos a filtrar para que devuelva al FRONT listado de peleas específicas -> SÓLO BOXEO // SÓLO MMA// TODAS
 router.route('/API/luchas/:tipo')
 .get(async(req,res) =>{
-  let startTime = new Date();
   let criterio = req.params.tipo;
   if (!fightTypeValidator(criterio)){
     res.send(createErrorResponse(`El criterio ${criterio} no es válido`))
@@ -131,8 +130,8 @@ router.route('/API/luchas/:tipo')
       })
       data.push(...mmaFights);
     }
-    let endTime = new Date() - startTime;
-    res.send(createSuccessResponse(data, {"numElements": data.length, "excTime (ms)": endTime,}));
+
+    res.send(createSuccessResponse(data, {"numElements": data.length}));
   }
   catch(e){
     res.send(createErrorResponse(e.data))
@@ -168,8 +167,7 @@ router.route("/API/calendario")
   // LLAMAMOS, FILTRAMOS, AÑADIMOS PELEAS DE MMA
   const fightList = await fightModel
   .find(filterParams)
-  // .skip(lastPageID)
-  .limit(1)
+  .limit()//estaba en : (1)
   .sort({ DateTime: 'ASC'})
   .exec()
   combinedFights.push(fightList)
