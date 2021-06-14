@@ -17,7 +17,7 @@
   },
   "scripts": {
     "start": "node index ",
-    "try":"NODE_ENV=dev node index",
+    "try": "NODE_ENV=dev node index",
     "test": "mocha --reporter spec",
     "dev": "nodemon index -e js,tpl",
     "online": "heroku ps:scale web=1 && heroku open",

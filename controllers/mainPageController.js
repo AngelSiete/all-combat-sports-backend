@@ -170,13 +170,13 @@ router.route("/API/calendario")
   .limit()//estaba en : (1)
   .sort({ DateTime: 'ASC'})
   .exec()
-  combinedFights.push(fightList)
+  combinedFights.push(...fightList)
   // LLAMAMOS, FILTRAMOS, AÑADIMOS PELEAS DE BOXEO
   const fightBoxingList = await fightBoxingModel
   .find(filterParams)
   .sort({ DateTime: 'ASC'})
   .exec();
-  combinedFights.push(fightBoxingList)
+  combinedFights.push(...fightBoxingList)
   res.send({
     "success":true,
     "metadata":{},

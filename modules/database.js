@@ -1,7 +1,8 @@
 
 const mongoose = require('mongoose')
 const config = require('./config')
-
+const dotenv = require('dotenv');
+dotenv.config();
 class Database {
   constructor() {
     this.db = null
@@ -12,7 +13,7 @@ class Database {
     this.db = mongoose.connection;
 
     try {
-            await mongoose.connect(process.env.DB_CONNECTION_STRING, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true })
+            await mongoose.connect(config.DB_CONNECTION_STRING, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true })
       console.log('Estamos conectados a MongoDB')
     }
     catch(error) {
