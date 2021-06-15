@@ -23,13 +23,23 @@ router.route("/API/luchador/:apellido").get(async(req, res) =>{
   }
   // DB
   try{
+  let data = [];
   let apellido = req.params.apellido;
   const filterParams = {LastName: apellido}
   // BUSCAR SIEMPRE CON LA PRIEMRA LETRA DEL APELLIDO EN MAYUSCULA
   const fightersByNameList = await fighterModel
       .find(filterParams)
-      .sort({ LastName: 'ASC'})
       .exec()
+  //BUSCAMOS LAS PELEAS DE ESE LUCHADOR
+  const fightsByNameList = await fightModel
+      .find( { 'Name': { "$regex": apellido } } )
+      .sort({ Day: 'DESC'})
+      .exec();
+  const fightsBoxByNameList = await fightBoxingModel
+  .find( { 'Name': { "$regex": apellido } } )
+  .sort({ Day: 'DESC'})
+  .exec();
+
   // CREAMOS EL JSON DE RESPUESTA ESTÁNDAR
   let fightersByNameCustomList = []
    fightersByNameList.forEach(luchador =>{
@@ -44,21 +54,12 @@ router.route("/API/luchador/:apellido").get(async(req, res) =>{
         }
       )
   })
-  res.json({
-    "success":true,
-    "metadata":{},
-    "data": fightersByNameCustomList
-  })}
-  catch{ res.status(500).json(
-    {
-    "success": false,
-    "metadata":
-      {
-        message: error.message
-      }
-    }
-    );
-
+  data.push(fightersByNameCustomList[0], ...fightsByNameList,...fightsBoxByNameList )
+  res.send(createSuccessResponse(data, {"numElements": data.length}))}
+  catch (error) {
+    res.status(500).json(
+      res.send(createErrorResponse(error.data))
+      );
   }
 });
 
@@ -163,34 +164,24 @@ router.route("/API/calendario")
       $lt: inAweek.toISOString(),
     }
   }
-  let combinedFights = []
+  let data = []
   // LLAMAMOS, FILTRAMOS, AÑADIMOS PELEAS DE MMA
   const fightList = await fightModel
   .find(filterParams)
   .limit()//estaba en : (1)
   .sort({ DateTime: 'ASC'})
   .exec()
-  combinedFights.push(...fightList)
+  data.push(...fightList)
   // LLAMAMOS, FILTRAMOS, AÑADIMOS PELEAS DE BOXEO
   const fightBoxingList = await fightBoxingModel
   .find(filterParams)
   .sort({ DateTime: 'ASC'})
   .exec();
-  combinedFights.push(...fightBoxingList)
-  res.send({
-    "success":true,
-    "metadata":{},
-    "data": combinedFights,
-  });
+  data.push(...fightBoxingList)
+  res.send(createSuccessResponse(data));
 } catch (error) {
   res.status(500).json(
-    {
-    "success": false,
-    "metadata":
-      {
-        message: error.message
-      }
-    }
+    res.send(createErrorResponse(error.data))
     );
 }
 })
