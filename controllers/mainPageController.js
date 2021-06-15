@@ -22,10 +22,11 @@ router.route("/API/luchador/:apellido").get(async(req, res) =>{
     return;
   }
   // DB
-  try{
   let data = [];
   let apellido = req.params.apellido;
   const filterParams = {LastName: apellido}
+  try{
+
   // BUSCAR SIEMPRE CON LA PRIEMRA LETRA DEL APELLIDO EN MAYUSCULA
   const fightersByNameList = await fighterModel
       .find(filterParams)
@@ -50,11 +51,14 @@ router.route("/API/luchador/:apellido").get(async(req, res) =>{
           FirstName: luchador.FirstName,
           LastName: luchador.LastName,
           Nickname: luchador.Nickname,
-          WeightClass: luchador.WeightClass
+          WeightClass: luchador.WeightClass,
+          PeleasMMA: fightsByNameList,
+          PeleasBox: fightsBoxByNameList
         }
       )
   })
-  data.push(fightersByNameCustomList[0], ...fightsByNameList,...fightsBoxByNameList )
+
+  data.push(fightersByNameCustomList[0] )
   res.send(createSuccessResponse(data, {"numElements": data.length}))}
   catch (error) {
     res.status(500).json(
