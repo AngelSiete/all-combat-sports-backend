@@ -16,7 +16,7 @@
     "npm": "6.14.12"
   },
   "scripts": {
-    "start": "node index ",
+    "start": "node index",
     "try": "NODE_ENV=dev node index",
     "test": "mocha --reporter spec",
     "dev": "nodemon index -e js,tpl",
